@@ -10,13 +10,12 @@ import io.vertx.core.json.JsonObject;
 public class EduticeVerticle extends AbstractVerticle {
 	
 	String pkgName = "";
-	String baseURL = "https://community.chocolatey.org/api/v2/package/" + pkgName;
+	String baseURL = "https://community.chocolatey.org/api/v2/Packages()?" + pkgName;
 	
 	@Override
 	public void start () throws Exception {
-		System.out.println("EduticeVerticle : You can access the baseURL HERE : " + baseURL);
 		
-		int code = eduticeAppSearch("oper");
+		int code = eduticeAppSearch("$filter=Id%20eq%20%27firefox%27%20&$top=3");
 		
 		String status = (code == 200) ? "OK" : "NONE";
 		vertx.eventBus().send("connexion.querry", new JsonObject()
@@ -35,6 +34,7 @@ public class EduticeVerticle extends AbstractVerticle {
 	public int eduticeAppSearch(String appName) throws IOException {
 		
 		URL pkgURL = new URL(baseURL + appName);
+		System.out.println("eduticeAppSearch : requesting URL...  " + pkgURL);
         HttpURLConnection connection = (HttpURLConnection)pkgURL.openConnection();
         connection.setRequestMethod("GET");
         connection.connect();
